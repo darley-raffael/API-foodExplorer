@@ -6,7 +6,7 @@ class UserRepository {
 	async findByEmail({ email }) {
 		const database = await sqliteConnection();
 		const user = await database
-			.get("SELECT * FROM customers WHERE email = (?)", [email]);
+			.get("SELECT email FROM customers WHERE email = (?)", [email]);
 
 		return user;
 	}
