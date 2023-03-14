@@ -6,8 +6,9 @@ class UserUpdateService {
 		this.userRepository = userRepository;
 	}
 
-	async execute({ name, email, old_password, password }, user_id) {
-		const user = await this.userRepository.findByUserId(user_id);
+	async execute({ name, email, old_password, password }, { id }) {
+		const user = await this.userRepository.findByUserId({ id });
+		console.log(user); // debug
 
 		if (!user) {
 			throw new AppError("Usuário não encontrado.");
@@ -22,7 +23,11 @@ class UserUpdateService {
 		user.name = name ?? user.name;
 		user.email = email ?? user.email;
 
-		if (!old_password && password) {
+		if (password && !old_password) {
+			throw new AppError("Informe a senha antiga para atualizar");
+		}
+
+		if (password && old_password) {
 			const checkOldPassword = await compare(old_password, user.password);
 
 			if (!checkOldPassword) {
@@ -32,7 +37,7 @@ class UserUpdateService {
 			user.password = await hash(password, 8);
 		}
 
-		const userUpdated = await this.userRepository.update(user, user_id);
+		const userUpdated = await this.userRepository.update(user, { id });
 
 		return userUpdated;
 	}

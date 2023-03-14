@@ -21,10 +21,10 @@ class UsersController {
 		const userRepository = new UserRepository();
 		const userUpdateService = new UserUpdateService(userRepository);
 		const { name, email, old_password, password } = req.body;
-		const user_id = req.user.id;
-		console.log(user_id);
+		const { id } = req.params;
 
-		await userUpdateService.execute({ name, email, old_password, password }, user_id);
+
+		await userUpdateService.execute({ name, email, old_password, password }, { id });
 
 		return res.status(201).json({ status: "Perfil atualizado com sucesso" });
 	}

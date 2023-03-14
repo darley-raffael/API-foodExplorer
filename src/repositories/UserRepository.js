@@ -25,16 +25,16 @@ class UserRepository {
 		return { id: userId };
 	}
 
-	async findByUserId(user_id) {
+	async findByUserId({ id }) {
 		const database = await sqliteConnection();
 
 		const user = await database
-			.get("SELECT * FROM customers WHERE id = (?)", [user_id]);
+			.get("SELECT * FROM customers WHERE id = (?)", [id]);
 
 		return user;
 	}
 
-	async update(user, user_id) {
+	async update(user, { id }) {
 		const database = await sqliteConnection();
 		await database.run(`--sql
 			UPDATE customers SET
@@ -42,7 +42,7 @@ class UserRepository {
 			email = ?,
 			password = ?,
 			update_at = DATETIME('now')
-			WHERE id = ?`, [user.name, user.email, user.password, user_id]
+			WHERE id = ?`, [user.name, user.email, user.password, id]
 		);
 	}
 }
