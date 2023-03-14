@@ -3,17 +3,17 @@ const sqliteConnection = require("../database/sqlite");
 
 class UserRepository {
 
+
 	async findByEmail({ email }) {
 		const database = await sqliteConnection();
 		const user = await database
-			.get("SELECT email FROM customers WHERE email = (?)", [email]);
+			.get("SELECT * FROM customers WHERE email = (?)", [email]);
 
 		return user;
 	}
 
 	async create({ name, email, password }) {
-		const database = await sqliteConnection();
-		const userId = database.run(`--sql
+		const userId = await this.database.run(`--sql
 			INSERT INTO customers (
 				name, 
 				email, 
@@ -23,6 +23,27 @@ class UserRepository {
 		`, [name, email, password]);
 
 		return { id: userId };
+	}
+
+	async findByUserId(user_id) {
+		const database = await sqliteConnection();
+
+		const user = await database
+			.get("SELECT * FROM customers WHERE id = (?)", [user_id]);
+
+		return user;
+	}
+
+	async update(user, user_id) {
+		const database = await sqliteConnection();
+		await database.run(`--sql
+			UPDATE customers SET
+			name = ?, 
+			email = ?,
+			password = ?,
+			update_at = DATETIME('now')
+			WHERE id = ?`, [user.name, user.email, user.password, user_id]
+		);
 	}
 }
 
