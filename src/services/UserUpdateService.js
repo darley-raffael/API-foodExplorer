@@ -8,7 +8,6 @@ class UserUpdateService {
 
 	async execute({ name, email, old_password, password }, { id }) {
 		const user = await this.userRepository.findByUserId({ id });
-		console.log(user); // debug
 
 		if (!user) {
 			throw new AppError("Usuário não encontrado.");

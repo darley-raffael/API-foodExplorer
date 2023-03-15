@@ -4,6 +4,7 @@ const sqliteConnection = require("../database/sqlite");
 class UserRepository {
 
 
+
 	async findByEmail({ email }) {
 		const database = await sqliteConnection();
 		const user = await database
@@ -13,7 +14,8 @@ class UserRepository {
 	}
 
 	async create({ name, email, password }) {
-		const userId = await this.database.run(`--sql
+		const database = await sqliteConnection();
+		const userId = await database.run(`--sql
 			INSERT INTO customers (
 				name, 
 				email, 
@@ -27,7 +29,6 @@ class UserRepository {
 
 	async findByUserId({ id }) {
 		const database = await sqliteConnection();
-
 		const user = await database
 			.get("SELECT * FROM customers WHERE id = (?)", [id]);
 
