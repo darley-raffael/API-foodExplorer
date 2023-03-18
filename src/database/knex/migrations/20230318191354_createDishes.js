@@ -8,7 +8,7 @@ exports.up = knex => knex.schema.createTable("dishes", table => {
 	table.string("name", 100);
 	table.text("description");
 	table.decimal("price");
-	table.binary("image_dishe").nullable();
+	table.string("image_dishe", 250).nullable();
 	table.string("type", 100);
 
 });
