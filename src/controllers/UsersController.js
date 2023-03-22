@@ -9,9 +9,9 @@ class UsersController {
 		const userRepository = new UserRepository();
 		const userCreateService = new UserCreateService(userRepository);
 		const { name, email, password } = req.body;
+		const { profile } = Object.assign({}, req.body, { profile: "customer" });
 
-
-		await userCreateService.execute({ name, email, password });
+		await userCreateService.execute({ name, email, password, profile });
 
 		return res.status(201).json({ status: "Criado com sucesso" });
 	}
