@@ -1,9 +1,3 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-
-
 
 const knex = require("../database/knex");
 
@@ -22,6 +16,19 @@ class DishesRepository {
 
 	async insertIngredients(ingredients) {
 		await knex("ingredients").insert(ingredients);
+	}
+
+	async findById({ id }) {
+		const dishe = await knex("dishes")
+			.where({ id })
+			.first();
+		const ingredients = await knex("ingredients")
+			.select("ingredient")
+			.pluck("ingredient") // obtêm somente o valor da lista de ingredients
+			.where({ dishe_id: id })
+			.orderBy("ingredient");
+
+		return { dishe, ingredients };
 	}
 
 

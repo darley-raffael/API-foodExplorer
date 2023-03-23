@@ -12,8 +12,14 @@ class DishesController {
 
 
 		return res.json(dishCreated);
+	}
 
+	async show(req, res) {
+		const { id } = req.params;
+		const dishesRepository = new DishesRepository;
+		const showDish = await dishesRepository.findById({ id });
 
+		return res.json(showDish);
 	}
 }
 
