@@ -31,6 +31,68 @@ class DishesRepository {
 		return { dishe, ingredients };
 	}
 
+	async index({ name, ingredients }) {
+		let dishesQuery;
+		if (ingredients) {
+			const filterIngredients = ingredients.split(",").map(ingredient => ingredient.trim());
+			dishesQuery = knex("dishes")
+				.select(
+					"dishes.id",
+					"dishes.name",
+					"dishes.description",
+					"dishes.price",
+					"dishes.image_dishe",
+					"dishes.type"
+				)
+				.innerJoin("ingredients", "ingredients.dishe_id", "dishes.id")
+				.whereIn("ingredients.ingredient", filterIngredients)
+				.groupBy("dishes.id")
+				.orderBy("dishes.name");
+		} else {
+			dishesQuery = knex("dishes")
+				.select(
+					"dishes.id",
+					"dishes.name",
+					"dishes.description",
+					"dishes.price",
+					"dishes.image_dishe",
+					"dishes.type"
+				)
+				.innerJoin("ingredients", "ingredients.dishe_id", "dishes.id")
+				.groupBy("dishes.id")
+				.orderBy("dishes.name");
+		}
+
+		if (name) {
+			dishesQuery = dishesQuery.whereLike("dishes.name", `%${name}%`);
+		}
+
+		const dishes = await dishesQuery;
+
+		const dishIds = dishes.map(dish => dish.id);
+
+		const listIngredients = await knex("ingredients")
+			.select("dishe_id", "ingredient")
+			.whereIn("dishe_id", dishIds);
+
+		const dishesWithIngredients = dishes.map(dish => {
+			const dishIngredients = listIngredients
+				.filter(ingredient => ingredient.dishe_id === dish.id)
+				.map(ingredient => ingredient.ingredient);
+
+			return { ...dish, ingredients: dishIngredients };
+		});
+
+		return dishesWithIngredients;
+	}
+
+
+
+	async delete({ dishe_id }) {
+		await knex("dishes").where(dishe_id).delete();
+
+	}
+
 
 }
 
