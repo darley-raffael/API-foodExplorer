@@ -25,15 +25,18 @@ class DishesController {
 
 	async index(req, res) {
 		const { name, ingredients } = req.query;
+		const dishesRepository = new DishesRepository;
+		const indexDishes = await dishesRepository.index({ name, ingredients });
+		return res.json(indexDishes);
+	}
+
+	async delete(req, res) {
+		const { id } = req.params;
 
 		const dishesRepository = new DishesRepository;
+		await dishesRepository.delete({ id });
 
-		const indexDishes = await dishesRepository.index({ name, ingredients });
-		console.log(indexDishes);
-
-		return res.json(indexDishes);
-
-
+		return res.json();
 	}
 }
 

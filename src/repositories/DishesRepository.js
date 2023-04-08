@@ -86,10 +86,8 @@ class DishesRepository {
 		return dishesWithIngredients;
 	}
 
-
-
-	async delete({ dishe_id }) {
-		await knex("dishes").where(dishe_id).delete();
+	async delete({ id }) {
+		await knex("dishes").where({ id }).delete();
 
 	}
 

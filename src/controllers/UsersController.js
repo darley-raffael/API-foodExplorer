@@ -9,7 +9,7 @@ class UsersController {
 		const userRepository = new UserRepository();
 		const userCreateService = new UserCreateService(userRepository);
 		const { name, email, password } = req.body;
-		const { profile } = Object.assign({}, req.body, { profile: "customer" });
+		const { profile } = Object.assign({}, { profile: "customer" }, req.body);
 
 		await userCreateService.execute({ name, email, password, profile });
 
