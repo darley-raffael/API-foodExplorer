@@ -5,9 +5,10 @@
  */
 exports.up = knex => knex.schema.createTable("cart_items", table => {
 	table.increments("id").notNullable();
+	table.string("title", 250);
 	table.integer("quantity");
-	table.integer("order_id").references("id").inTable("orders");
-	table.integer("dishe_id").references("id").inTable("dishes");
+	table.integer("dishe_id").references("id").inTable("dishes").onDelete("CASCADE");
+	table.integer("cart_id").references("id").inTable("cart");
 });
 
 /**

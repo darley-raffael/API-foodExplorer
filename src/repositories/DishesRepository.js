@@ -4,12 +4,13 @@ const knex = require("../database/knex");
 
 class DishesRepository {
 
-	async create({ name, price, type, description }) {
+	async create({ name, price, category, description, filename }) {
 		const [newDish] = await knex("dishes").insert({
 			name,
 			price,
-			type,
-			description
+			category,
+			description,
+			image_dishe: filename ?? null
 		});
 		return newDish;
 	}
@@ -17,6 +18,8 @@ class DishesRepository {
 	async insertIngredients(ingredients) {
 		await knex("ingredients").insert(ingredients);
 	}
+
+	//Inserir função de atualização dos pratos abaixo
 
 	async findById({ id }) {
 		const dishe = await knex("dishes")
@@ -42,7 +45,7 @@ class DishesRepository {
 					"dishes.description",
 					"dishes.price",
 					"dishes.image_dishe",
-					"dishes.type"
+					"dishes.category"
 				)
 				.innerJoin("ingredients", "ingredients.dishe_id", "dishes.id")
 				.whereIn("ingredients.ingredient", filterIngredients)
@@ -56,7 +59,7 @@ class DishesRepository {
 					"dishes.description",
 					"dishes.price",
 					"dishes.image_dishe",
-					"dishes.type"
+					"dishes.category"
 				)
 				.innerJoin("ingredients", "ingredients.dishe_id", "dishes.id")
 				.groupBy("dishes.id")
