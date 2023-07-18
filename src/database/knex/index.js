@@ -1,7 +1,7 @@
-const { default: knex } = require("knex");
-const knexfile = require("../../../knexfile");
+const knex = require("knex");
 
-const connection = knex(knexfile.development);
+const config = require("../../../knexfile");
 
+const connection = knex(config.development);
 
 module.exports = connection;

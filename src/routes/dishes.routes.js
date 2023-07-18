@@ -1,20 +1,22 @@
 const { Router } = require("express");
-const DishesController = require("../controllers/DishesController");
-const isAdmin = require("../middlewares/isAdmin");
 const multer = require("multer");
 const uploadConfig = require("../configs/upload");
+
+const DishesController = require("../controllers/DishesController");
 const ensureAuthenticated = require("../middlewares/ensureAuthenticated");
+const ensureIsAdmin = require("../middlewares/ensureIsAdmin");
 
-
-const dishesRouter = Router();
-const dishesController = new DishesController;
+const dishesRoutes = Router();
 const upload = multer(uploadConfig.MULTER);
-dishesRouter.use(ensureAuthenticated);
 
-dishesRouter.post("/:id", isAdmin, upload.single("image_dishe"), dishesController.create);
-dishesRouter.get("/:id", dishesController.show);
-dishesRouter.get("/", dishesController.index);
-dishesRouter.put("/:id", isAdmin, upload.single("image_dishe"), dishesController.update);
-dishesRouter.delete("/:id", isAdmin, dishesController.delete);
+const dishesController = new DishesController();
 
-module.exports = dishesRouter;
+dishesRoutes.use(ensureAuthenticated);
+
+dishesRoutes.post("/", ensureIsAdmin, upload.single("image"), dishesController.create);
+dishesRoutes.get("/", dishesController.index);
+dishesRoutes.get("/:id", dishesController.show);
+dishesRoutes.put("/:id", ensureIsAdmin, upload.single("image"), dishesController.update);
+dishesRoutes.delete("/:id", ensureIsAdmin, dishesController.delete);
+
+module.exports = dishesRoutes;
